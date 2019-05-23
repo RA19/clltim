@@ -60,13 +60,11 @@ def Nan2Mean(b):
             col_cnt = col_cnt + 1
     col_mean = np.nanmean(a, axis=0)
     col_mean[np.isnan(col_mean)] = 0;
-    #    print('infinity probs found after:' +str(np.sum(np.logical_and(~np.isnan(col_mean),~np.isfinite(col_mean)))))
-    #    print('nan  probs found after:' +str(np.sum(np.isnan(col_mean))))
+
 
     # Find indicies that you need to replace
     inds = np.where(np.isnan(a))
-    #    for indexer in range(np.shape(inds)[1]):
-    #        a[inds[0][indexer],inds[1][indexer]]=col_mean[inds[1][indexer]]
+
 
     a[inds] = np.take(col_mean, inds[1])
 
@@ -77,8 +75,7 @@ def Nan2Mean_useColmean(b, col_mean):
     a = np.copy(b)
     inds = np.where(np.isnan(a))
     a[inds] = np.take(col_mean, inds[1])
-    #    for indexer in range(np.shape(inds)[1]):
-    #        a[inds[0][indexer],inds[1][indexer]]=col_mean[inds[1][indexer]]
+
     return a
 
 
@@ -213,7 +210,7 @@ def process_ml(prediction_id):
     update_state(phase1_steps, phase1_total_steps, CeleryTaskPhase.PHASE_1.value)
 
     ###############################################################################
-    # VARIABLES CURRENTLY USED FOR BETA CLL-TIM SERVER (Excluding Pathology & Diagnosis and Blood Cultures for now)
+    # VARIABLES CURRENTLY USED FOR BETA CLL-TIM SERVER 
     ###############################################################################
     BaselineList = ['Binet Stage', 'IGHV_unmut', 'ECOG', 'FAMCLL', 'Age', 'Beta2m', 'CD38', 'ZAP70', 'Gender', 'del13',
                     'tri12', 'del11', 'del17']
@@ -410,10 +407,7 @@ def process_ml(prediction_id):
     elif len(Infec_Inf) == 2:
         IFeats[0] = np.nan
     #
-    # for CurrBVar in CT_FNM_BC[:,0]:
-    #      if CT_FNM_BC[bcnt,1]=='BOW': # Check for Bloodculture - no growth
-    #
-
+   
     IFeats = np.squeeze(IFeats)
     Infec_P = np.copy(np.transpose(IFeats))
 
@@ -644,7 +638,7 @@ def process_ml(prediction_id):
     ################################################################################
 
     OutputVal = np.concatenate(
-        (Baseline_P, np.zeros((64,)), Lab_P, Infec_P))  # Joining Feature Vectors (with no pathology and diagnosis)
+        (Baseline_P, np.zeros((64,)), Lab_P, Infec_P))  # Joining Feature Vectors
     CheckFeats = np.column_stack((CT_FNM, OutputVal))
     # END OF FEATURE GENERATION #
 
@@ -871,101 +865,7 @@ def process_ml(prediction_id):
         #      cntyred=0
         #      cntyblue=1
         LW = 0.1
-        #
-        #      for n in range(10):
-        #            dd=pd.DataFrame()
-        #
-        #            dd['Vals']=PopMatrix[~np.isnan(PopMatrix[:,TopInds[p,n]]),TopInds[p,n]]
-        #            dd['Inds']=np.zeros((np.sum(~np.isnan(PopMatrix[:,TopInds[p,n]]))))+n
-        #            if n<5:
-        #                  if len(np.unique(dd['Vals']))>2:
-        #                        sns.boxenplot(x='Inds',order=[9,8,7,6,5,4,3,2,1,0],y='Vals', data=dd,color=(cntyblue,cntyblue,1))
-        #                  cntyblue=cntyblue-0.2
-        #            else:
-        #                  if len(np.unique(dd['Vals']))>2:
-        #                        sns.boxenplot(x='Inds',order=[9,8,7,6,5,4,3,2,1,0],y='Vals', data=dd,color=(1,cntyred,cntyred))
-        #                  cntyred=cntyred+0.2
-        #      order=[9,8,7,6,5,4,3,2,1,0]
-        #      cntyred=1
-        #      cntyblue=0
-        #      for n in range(10):
-        #
-        #
-        #             if n<5:
-        #                  if np.isnan(ToppiesRealVals[p,order[n]])==0:
-        #                        plt.scatter(n,ToppiesRealVals[p,order[n]] ,color=(1,cntyred,cntyred), marker=mks[n],edgecolor='black', s=25,label=FuncFeatNames[0][TopInds[p,order[n]]],alpha=1)
-        #
-        #                        bbox = {'facecolor':'white','linewidth':LW,'boxstyle':'round,pad=0.2'}
-        #                        plt.text(n-0.1,ToppiesRealVals[p,order[n]],str(np.round(ToppiesRealValsU[p,order[n]],1)), {'ha': 'right', 'va': 'top','bbox':bbox},rotation=0,color='black',fontsize=5)
-        #                  else:
-        #                        bbox = {'facecolor':'white','linewidth':LW,'boxstyle':'round,pad=0.2'}
-        #
-        #                        plt.scatter(n,(np.round(np.nanmean(PopMatrix[:,TopInds[p,order[n]]]),1)) ,color=(1,cntyred,cntyred), marker=mks[n],edgecolor='black', s=25,label=FuncFeatNames[0][TopInds[p,order[n]]],alpha=1)
-        #                        plt.text(n-0.1,(np.round(np.nanmean(PopMatrix[:,TopInds[p,order[n]]]),1)),'Missing Value', {'ha': 'center', 'va': 'center','bbox':bbox},rotation=0,color='black',fontsize=5)
-        #
-        #
-        #                  cntyred=cntyred-0.2
-        #                  if abs(np.round(np.nanmax(PopMatrixU[:,TopInds[p,order[n]]]),1))<1000:
-        #                         plt.text(n,1.05,str(np.round(np.nanmax(PopMatrixU[:,TopInds[p,order[n]]]),1)), {'ha': 'center', 'va': 'center'},rotation=0,color='black',fontsize=5)
-        #                  else:
-        #                        fa=np.round(np.nanmax(PopMatrixU[:,TopInds[p,order[n]]]),1)
-        #                        fa="{:.2e}".format(fa)
-        #                        plt.text(n,1.05,str(fa), {'ha': 'center', 'va': 'center'},rotation=0,color='black',fontsize=5)
-        #
-        #                  if abs(np.round(np.nanmax(PopMatrixU[:,TopInds[p,order[n]]]),1))<1000:
-        #                         plt.text(n,-0.05,str(np.round(np.nanmin(PopMatrixU[:,TopInds[p,order[n]]]),1)), {'ha': 'center', 'va': 'center'},rotation=0,color='black',fontsize=5)
-        #
-        #                  else:
-        #                        fa=np.round(np.nanmin(PopMatrixU[:,TopInds[p,order[n]]]),1)
-        #                        fa="{:.2e}".format(fa)
-        #                        plt.text(n,-0.05,str(fa), {'ha': 'center', 'va': 'center'},rotation=0,color='black',fontsize=5)
-        #
-        #             else:
-        #                  if np.isnan(ToppiesRealVals[p,order[n]])==0:
-        #                        plt.scatter(n,ToppiesRealVals[p,order[n]],color= (cntyblue,cntyblue,1), marker=mks[n],edgecolor='black', s=25,label=FuncFeatNames[0][TopInds[p,order[n]]],alpha=1)
-        #                        bbox = {'facecolor':'white','linewidth':LW,'boxstyle':'round,pad=0.2'}
-        #                        plt.text(n-0.1,ToppiesRealVals[p,order[n]],str(np.round(ToppiesRealValsU[p,order[n]],1)), {'ha': 'right', 'va': 'top','bbox':bbox},rotation=0,color='black',fontsize=5)
-        #
-        #                  else:
-        #                        bbox = {'facecolor':'white','linewidth':LW,'boxstyle':'round,pad=0.2'}
-        #
-        #                        plt.scatter(n,(np.round(np.nanmean(PopMatrix[:,TopInds[p,order[n]]]),1)) ,color=(1,cntyred,cntyred), marker=mks[n],edgecolor='black', s=25,label=FuncFeatNames[0][TopInds[p,order[n]]],alpha=1)
-        #                        plt.text(n-0.1,(np.round(np.nanmean(PopMatrix[:,TopInds[p,order[n]]]),1)),'Missing Value', {'ha': 'center', 'va': 'center','bbox':bbox},rotation=0,color='black',fontsize=5)
-        #
-        #
-        #                  cntyblue=cntyblue+0.2
-        #
-        #                  if abs(np.round(np.nanmax(PopMatrixU[:,TopInds[p,order[n]]]),1))<1000:
-        #                         plt.text(n,1.05,str(np.round(np.nanmax(PopMatrixU[:,TopInds[p,order[n]]]),1)), {'ha': 'center', 'va': 'center'},rotation=0,color='black',fontsize=5)
-        #                  else:
-        #                        fa=np.round(np.nanmax(PopMatrixU[:,TopInds[p,order[n]]]),1)
-        #                        fa="{:.2e}".format(fa)
-        #                        plt.text(n,1.05,str(fa), {'ha': 'center', 'va': 'center'},rotation=0,color='black',fontsize=5)
-        #
-        #                  if abs(np.round(np.nanmax(PopMatrixU[:,TopInds[p,order[n]]]),1))<1000:
-        #                         plt.text(n,-0.05,str(np.round(np.nanmin(PopMatrixU[:,TopInds[p,order[n]]]),1)), {'ha': 'center', 'va': 'center'},rotation=0,color='black',fontsize=5)
-        #
-        #                  else:
-        #                        fa=np.round(np.nanmin(PopMatrixU[:,TopInds[p,order[n]]]),1)
-        #                        fa="{:.2e}".format(fa)
-        #                        plt.text(n,-0.05,str(fa), {'ha': 'center', 'va': 'center'},rotation=0,color='black',fontsize=5)
-        #
-        #
-        #
-        #
-        #             plt.legend(loc='center right', bbox_to_anchor=(1.8, 0.5), ncol=1,fontsize=7)
-        #
-        #      plt.yticks([0,1],['Minimum Population Value','Maximum Population Value'])
-        #      plt.xticks([])
-        #      for spine in plt.gca().spines.values():
-        #          spine.set_visible(False)
-        #      plt.xlabel('')
-        #      plt.ylabel('')
 
-        # plt.axis('off')
-        #      plt.savefig('AA.pdf', bbox_inches='tight')
-
-        #
 
         plt.subplot(2, 1, 1)
         # plt.xlim(-30,30)
@@ -1048,25 +948,7 @@ def process_ml(prediction_id):
         plt.yticks([])
         plt.axis('off')
 
-    #      if ProbRisk>0.5:
-    #            if ProbRisk>0.58:
-    #                  sa='High Risk (Confidence Level High:' +str(np.round(ProbRisk,2))+')'
-    #            else:
-    #                  sa='High Risk (Confidence Level Low:' +str(np.round(ProbRisk,2))+')'
-    #            bbox = {'facecolor':'red','linewidth':LW,'boxstyle':'round,pad=0.2'}
-    #
-    #
-    #      else:
-    #            bbox = {'facecolor':'blue','linewidth':LW,'boxstyle':'round,pad=0.2'}
-    #            if ProbRisk<0.28:
-    #                  sa='Low Risk (Confidence Level High:' +str(np.round(1-np.round(ProbRisk,2),2))+')'
-    #            else:
-    #                  sa='Low Risk (Confidence Level Low:' +str(np.round(1-np.round(ProbRisk,2),2))+')'
-    #
-    #            Typie='LR'
-    #
-    #      P.arrow(0,0.5,0,2,ec='black', fc='black',width=0.01,head_width=0.1, head_length=0.3,linewidth=0.1)
-    #      plt.text(0,1,sa,{'ha': 'center', 'va': 'top','bbox':bbox},fontsize=5,color='white')
+   
 
     Xinit = -70
     if ProbRisk > 0.5:
